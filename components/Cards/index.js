@@ -17,14 +17,31 @@
 // </div>
 //
 // Create a card for each of the articles and add the card to the DOM.
- 
+
+// articleContainer.appendChild(articleMaker())
+
 axios.get('https://lambda-times-backend.herokuapp.com/articles')
 .then( response => {
-    console.log(response)
+  
+    let arts = response.data.articles
+    for( key in arts) {
+        let piece = arts[key]
 
+        for(value in piece){
+            let subPiece = piece[value]
+            articleContainer.appendChild(articleMaker(subPiece))
+        }
+    }
+        
+    
+    
 })
 
-function articleMaker() {
+.catch( error => {
+    console.log('not quite, you forgot about', error)
+})
+const articleContainer = document.querySelector('.cards-container')
+function articleMaker(b) {
     const article = document.createElement('div');
     const headline = document.createElement('div');
     const author = document.createElement('div');
@@ -32,21 +49,24 @@ function articleMaker() {
     const img = document.createElement('img');
     const by = document.createElement('span');
     
-    article.append(headline);
-    article.append(author);
-    author.append(imgContainer);
-    author.append(by);
-    imgContainer.append(img);
+   
     
     article.classList.add('card');
     headline.classList.add('headline');
     author.classList.add('author');
     imgContainer.classList.add('img-container');
 
+    headline.textContent = b.headline;
+    by.textContent = b.authorName;
+    img.src = b.authorPhoto;
 
+    article.append(headline);
+    article.append(author);
+    author.append(imgContainer);
+    author.append(by);
+    imgContainer.append(img);
+    articleContainer.append(article);
 
     return article
 }    
 
-const articleContainer = document.querySelector('.cards-container')
-articleContainer.appendChild(articleMaker())
